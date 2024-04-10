@@ -2,6 +2,8 @@ const router = require("express").Router();
 const User = require("../models/user");
 const bcrypt = require("bcryptjs")
 
+
+// Sign UP
 router.post("/register", async (req, res) => {
   try {
     const { email, username, password } = req.body;
@@ -16,5 +18,24 @@ router.post("/register", async (req, res) => {
     res.status(400).json({ message: "User Already Exists" });
   }
 });
+
+// Log IN
+router.post("/login", async (req, res) => {
+  try {
+    const user = await User.findOne({email:req.body.email})
+    if (!user){
+        res.status(400).json({message:"Please Sign Up first"})
+    }
+    const isPasswordCorrect = bcrypt.compareSync(req.body.password, user.password)
+    if (!isPasswordCorrect){
+        res.status(400).json({message:"Incorrect Password"})
+    }
+    const {password, ...others} = user._doc;
+    res.status(200).json({others})
+  } catch (error) {
+    res.status(400).json({ message: "User Already Exists" });
+  }
+});
+
 
 module.exports = router;
