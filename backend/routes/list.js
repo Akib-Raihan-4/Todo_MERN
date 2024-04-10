@@ -42,8 +42,7 @@ router.delete("/deleteTask/:id", async (req, res) => {
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
-      const list = await List.findByIdAndDelete(req.params.id);
-      list.save().then(() => res.status(200).json({ message: "Task Update" }));
+      const list = await List.findByIdAndDelete(req.params.id).then(() => res.status(200).json({ message: "Task deleted" }));
     }
   } catch (error) {
     console.log(error);
